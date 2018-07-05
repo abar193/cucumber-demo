@@ -7,6 +7,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
+import java.util.Scanner;
 
 public class WithdrawSteps {
 
@@ -42,5 +43,17 @@ public class WithdrawSteps {
 	@Then("^error message about incorrect amount is displayed$")
 	public void error_message_about_incorrect_amount_is_displayed() throws Throwable {
 		assertThat(atm.getScreen(), is("Cannot withdraw negative amount!"));
+	}
+
+	@Then("^evaluate manually$")
+	public void evaluate_manually() throws Throwable {
+		System.out.println("Mark feature as [p]assed or [f]ailed?");
+		Scanner sc = new Scanner(System.in);
+		String s = sc.nextLine();
+		while (!s.equals("f") && !s.equals("p")) {
+			System.out.println("Unknown input: " + s);
+			s = sc.nextLine();
+		}
+		assertThat("User marked test as failed", s, is("p"));
 	}
 }

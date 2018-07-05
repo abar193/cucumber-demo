@@ -2,38 +2,80 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>bdd-atm</groupId>
-  <artifactId>bdd-atm</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>bdd-atm</groupId>
+    <artifactId>bdd-atm</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-  <name>bdd-atm</name>
-  <url>http://maven.apache.org</url>
+    <name>bdd-atm</name>
+    <url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.7</java.version>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>info.cukes</groupId>
-      <artifactId>cucumber-java</artifactId>
-      <version>1.2.2</version>
-      <scope>test</scope>
-	</dependency>
-	
-	<dependency>
-	  <groupId>info.cukes</groupId>
-	  <artifactId>cucumber-junit</artifactId>
-	  <version>1.2.2</version>
-	  <scope>test</scope>
-	</dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>2.3.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>2.3.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>1.2.5</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- This plugin is only needed if you want to have manual tests in your project -->
+                <!-- Since `mvn test` prevents System.in from being read you need another way to start your tests and get user input -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <!-- Uncomment the following line if you want to run manual tests with mvn test command -->
+                        <!--<phase>test</phase>-->
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>cucumber.api.cli.Main</mainClass>
+                    <classpathScope>test</classpathScope>
+                    <arguments>
+                        <!-- Specify the location of .feature files -->
+                        <argument>classpath:atm</argument>
+                        <!-- Specify the location of gluecode classes - in our case that's WithdrawSteps -->
+                        <argument>--glue</argument>
+                        <argument>classpath:atm</argument>
+                        <!-- Define plugins - first one ensures that console output is colorful,
+                            second one gives location for report file -->
+                        <argument>--plugin</argument>
+                        <argument>pretty</argument>
+                        <argument>-p</argument>
+                        <argument>json:target/cucumber/manual.json</argument>
+                        <!-- Cucumber Tag expression.  -->
+                        <argument>--tags</argument>
+                        <argument>@manual</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
